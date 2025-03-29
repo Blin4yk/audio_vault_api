@@ -4,7 +4,7 @@ from jose import jwt
 from passlib.context import CryptContext
 from pydantic import EmailStr
 
-from backend.config import jwt_config
+from backend.config import jwt_config, yandex_config
 from backend.services.user_service import UserService
 
 pwd_context = CryptContext(schemes=["bcrypt"])
@@ -23,7 +23,7 @@ def create_access_token(data: dict) -> str:
     expire = datetime.utcnow() + timedelta(minutes=30)
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(
-        to_encode, jwt_config.SECRET_KEY, jwt_config.ALGORITHM
+        to_encode, jwt_config.secret_key, jwt_config.algorithm
     )
     return encoded_jwt
 
@@ -34,5 +34,3 @@ async def authenticate_user(email: EmailStr, password: str):
         return None
 
     return user
-
-# Хорошая практика использовать utcnow()

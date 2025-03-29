@@ -1,0 +1,15 @@
+audio
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.log
+app.log
+.git/
+.gitignore
+Dockerfile
+README.md
+M4 README.md
+logs/
+.idea/

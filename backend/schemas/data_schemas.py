@@ -1,3 +1,5 @@
+from typing import Optional
+
 from pydantic import BaseModel
 
 #-------Users-----#
@@ -5,6 +7,9 @@ from pydantic import BaseModel
 class UserAuth(BaseModel):
     email: str
     password: str
+
+class UserUpdateSchema(BaseModel):
+    email: Optional[str] = None
 
 #-------Audio-----#
 

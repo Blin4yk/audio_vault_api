@@ -8,8 +8,7 @@ class User(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     email: Mapped[str] = mapped_column()
-    hashed_password: Mapped[str] = mapped_column()
-    role: Mapped[str] = mapped_column()
+    hash_password: Mapped[str] = mapped_column()
 
 class Audio(Base):
     __tablename__ = "audios"

@@ -11,7 +11,7 @@ from backend.services.user_service import UserService
 def get_token(request: Request):
     token = request.cookies.get("booking_access_token")
     if not token:
-        raise HTTPException()
+        raise HTTPException(status_code=401, detail="Токен отсутствует")
     return token
 
 

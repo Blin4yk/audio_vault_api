@@ -16,16 +16,17 @@ class DBConfig(BaseSettings):
 
     @functools.cached_property
     def db_url(self):
-        return f"{self.driver}://{self.username}:{self.password}@{self.host}{f':{self.port}' if self.port else ''}/{self.name}"
+        return f"{self.driver}+asyncpg://{self.username}:{self.password}@{self.host}{f':{self.port}' if self.port else ''}/{self.name}"
 
     model_config = SettingsConfigDict(env_prefix="DB_", env_file=".env", extra="allow")
 
 
 class JWTConfig(BaseSettings):
+    """ Конфигурация JWT токена """
     secret_key: str
     algorithm: str
 
-    model_config = SettingsConfigDict(env_prefix="JWT_", env_file=".env")
+    model_config = SettingsConfigDict(env_prefix="JWT_", env_file=".env", extra="allow")
 
 # Инициализация конфигурации
 db_config = DBConfig()

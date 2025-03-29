@@ -3,11 +3,11 @@ from pydantic import BaseModel
 #-------Users-----#
 
 class UserAuth(BaseModel):
-    username: str
+    email: str
     password: str
 
 #-------Audio-----#
 
 class FileUploader(BaseModel):
     message: str
-    filename: str
+    file_path: str

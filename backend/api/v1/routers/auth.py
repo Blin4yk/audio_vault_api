@@ -16,7 +16,7 @@ async def register_user(user_data: UserAuth):
     if exiting_user:
         raise HTTPException(status_code=409, detail="Email already registered")
     hashed_password = get_password_hash(user_data.password)
-    await UserService.add(email=user_data.email, hashed_password=hashed_password)
+    await UserService.add(email=user_data.email, hash_password=hashed_password)
 
 
 @router.post("/login")

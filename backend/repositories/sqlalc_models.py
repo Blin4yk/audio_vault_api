@@ -1,16 +1,20 @@
-from uuid import UUID, uuid4
-
-from sqlalchemy.dialects.postgresql import UUID as PG_UUID
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
-class Base(DeclarativeBase):
-    id: Mapped[UUID] = mapped_column(
-        PG_UUID(as_uuid=True), unique=True, primary_key=True, index=True, default=uuid4
-    )
+from backend.database import Base
+
 
 class User(Base):
     __tablename__ = "users"
 
+    id: Mapped[int] = mapped_column(primary_key=True)
     email: Mapped[str] = mapped_column()
     hashed_password: Mapped[str] = mapped_column()
     role: Mapped[str] = mapped_column()
+
+class Audio(Base):
+    __tablename__ = "audios"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column()
+    file_name: Mapped[str] = mapped_column()
+    file_path: Mapped[str] = mapped_column()

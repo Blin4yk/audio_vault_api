@@ -3,7 +3,6 @@ import os
 from fastapi import UploadFile
 from starlette.responses import JSONResponse
 from pathlib import Path
-from backend.database import async_session_maker
 from backend.repositories.sqlalc_models import Audio
 from backend.schemas.data_schemas import FileUploader
 from backend.services.base_service import BaseService

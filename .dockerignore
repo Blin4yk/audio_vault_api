@@ -8,7 +8,6 @@ __pycache__/
 app.log
 .git/
 .gitignore
-Dockerfile
 README.md
 M4 README.md
 logs/

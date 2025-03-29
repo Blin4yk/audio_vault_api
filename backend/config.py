@@ -2,6 +2,8 @@ import functools
 
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
+from sqlalchemy.orm import sessionmaker
 
 
 class DBConfig(BaseSettings):
@@ -40,3 +42,12 @@ class YandexConfig(BaseSettings):
 db_config = DBConfig()
 jwt_config = JWTConfig()
 yandex_config = YandexConfig()
+
+AUTHORIZATION_BASE_URL = "https://oauth.yandex.ru/authorize"
+TOKEN_URL = "https://oauth.yandex.ru/token"
+
+DATABASE_URL = db_config.db_url
+
+engine = create_async_engine(DATABASE_URL)
+
+async_session_maker = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)

@@ -1,8 +1,7 @@
-from fastapi import APIRouter, HTTPException, Response
-from starlette.responses import RedirectResponse
+from fastapi import APIRouter, HTTPException, Response, Query
+from requests_oauthlib import OAuth2Session
 
-from backend.config import yandex_config
-from backend.dependencies import get_yandex_token
+from backend.config import yandex_config, AUTHORIZATION_BASE_URL, TOKEN_URL
 from backend.schemas.data_schemas import UserAuth
 from backend.services.auth_service import get_password_hash, authenticate_user, create_access_token
 from backend.services.user_service import UserService
@@ -40,14 +39,29 @@ async def logout_user(response: Response):
     response.delete_cookie("booking_access_token")
 
 
-@router.get("/login/yandex")
-async def login():
-    """Редирект на страницу авторизации Яндекса."""
-    auth_url = f'https://oauth.yandex.ru/authorize?response_type=code&client_id={yandex_config.client_id}&redirect_uri={yandex_config.redirect_uri}'
-    return RedirectResponse(auth_url)
+@router.get("/authorize")
+def authorize():
+    try:
+        oauth = OAuth2Session(yandex_config.client_id, redirect_uri=yandex_config.redirect_uri)
+        authorization_url, _ = oauth.authorization_url(AUTHORIZATION_BASE_URL)
+        return {"authorization_url": authorization_url}
+    except Exception:
+        raise HTTPException(status_code=500, detail="Ошибка получения ссылки")
 
-@router.get("/auth/callback")
-async def auth_callback(code: str):
-    """Обработка ответа от Яндекса и получение токена доступа."""
-    token = await get_yandex_token(code)
-    return {"access_token": token}
+@router.post("/callback")
+def callback(response: Response, code: str = Query(..., description="Код подтверждения из Яндекса")):
+    try:
+        oauth = OAuth2Session(yandex_config.client_id, redirect_uri=yandex_config.redirect_uri)
+        token = oauth.fetch_token(TOKEN_URL, client_secret=yandex_config.client_secret, code=code)
+        access_token = token.get("access_token")
+
+        # Устанавливаем access_token в куки
+        response.set_cookie(
+            key="yandex_access_token",
+            value=access_token,
+            httponly=True,
+        )
+
+        return {"access_token": access_token}
+    except Exception:
+        raise HTTPException(status_code=400, detail="Получите код")

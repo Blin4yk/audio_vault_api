@@ -2,7 +2,7 @@ from typing import Optional
 
 from pydantic import BaseModel
 
-#-------Users-----#
+#-----Users-----#
 
 class UserAuth(BaseModel):
     email: str
@@ -11,8 +11,15 @@ class UserAuth(BaseModel):
 class UserUpdateSchema(BaseModel):
     email: Optional[str] = None
 
-#-------Audio-----#
+#-----Audio-----#
+class AudioResponse(BaseModel):
+    id: int
+    user_id: int
+    file_name: str
+    file_path: str
 
 class FileUploader(BaseModel):
     message: str
     file_path: str
+
+#-----Autorization-----#

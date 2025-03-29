@@ -2,9 +2,7 @@ from fastapi import HTTPException
 from sqlalchemy import insert, select, delete, update
 from sqlalchemy.exc import NoResultFound
 
-from backend.database import async_session_maker
-
-
+from backend.config import async_session_maker
 
 
 class BaseService:

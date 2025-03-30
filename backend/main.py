@@ -2,10 +2,8 @@ import sys
 from pathlib import Path
 
 import uvicorn
-
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
-
 
 sys.path.append(str(Path(__file__).parent.parent))
 
@@ -18,7 +16,6 @@ app.include_router(user_router)
 app.include_router(audio_router)
 app.include_router(auth_router)
 
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # Разрешает все домены
@@ -27,9 +24,11 @@ app.add_middleware(
     allow_headers=["*"],  # Разрешает все заголовки
 )
 
+
 @app.get("/")
 async def root():
     return {"message": "Hello World"}
+
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="localhost", port=8000)

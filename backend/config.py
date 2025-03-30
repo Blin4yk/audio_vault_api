@@ -30,6 +30,7 @@ class JWTConfig(BaseSettings):
 
     model_config = SettingsConfigDict(env_prefix="JWT_", env_file=".env", extra="allow")
 
+
 class YandexConfig(BaseSettings):
     """ Конфигурация Яндекс авторизации """
     client_id: str
@@ -37,6 +38,7 @@ class YandexConfig(BaseSettings):
     redirect_uri: str
 
     model_config = SettingsConfigDict(env_prefix="YANDEX_", env_file=".env", extra="allow")
+
 
 # Инициализация конфигурации
 db_config = DBConfig()

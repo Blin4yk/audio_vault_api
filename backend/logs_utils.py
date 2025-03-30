@@ -22,6 +22,7 @@ class JsonFormatter(logging.Formatter):
         )
         return json.dumps(log_record, ensure_ascii=False)
 
+
 class CustomTimedRotatingFileHandler(TimedRotatingFileHandler):
     def __init__(self, filename, when, interval, backupCount=0, encoding='utf-8', logger_name="default", datefmt=None):
         self.datefmt = datefmt
@@ -30,14 +31,14 @@ class CustomTimedRotatingFileHandler(TimedRotatingFileHandler):
     def _generate_timestamp(self, str_timestamp: str):
         return dateutil.parser.parse(str_timestamp).strftime(self.datefmt)
 
-
     def emit(self, record):
         """Перед каждым логированием обновляем путь к файлу с учетом имени логера."""
         if not self.baseFilename:
             self.stream = open(
                 self.get_filename_stream(
                     record.name,
-                    self._generate_timestamp(record.asctime if 'asctime' in record.__dict__ else datetime.now().isoformat()),
+                    self._generate_timestamp(
+                        record.asctime if 'asctime' in record.__dict__ else datetime.now().isoformat()),
                 ),
                 "a",
                 encoding=self.encoding

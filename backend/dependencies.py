@@ -7,7 +7,6 @@ from backend.config import jwt_config, yandex_config
 from backend.repositories.sqlalc_models import User
 from backend.services.auth_service import jwt_token
 from backend.services.user_service import UserService
-import requests
 
 
 def get_token(request: Request):

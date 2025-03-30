@@ -1,7 +1,6 @@
-from email.policy import default
 from typing import List
 
-from fastapi import APIRouter, UploadFile, File, Form, Depends, Query, HTTPException
+from fastapi import APIRouter, UploadFile, File, Form, Depends, HTTPException
 from starlette.responses import JSONResponse
 
 from backend.dependencies import get_current_user, get_yandex_current_user
@@ -15,7 +14,7 @@ router = APIRouter(
 )
 
 
-@router.post("/upload_audio")
+@router.post("/upload_audio", summary="Загрузка аудио файла")
 async def upload_audio(
         user: UserAuth = Depends(get_yandex_current_user),
         file: UploadFile = File(..., description="Загрузите аудио файл"),
@@ -40,11 +39,21 @@ async def upload_audio(
     else:
         return JSONResponse(content=audio.model_dump(), status_code=400)
 
-@router.get("/get_audio_file_user/{user_id}")
+
+@router.get("/get_audio_file_user/{user_id}", summary="Получение списка аудиофайлов пользователя по его идентификатору")
 async def get_audio_file_user(
-    user_id: int,
-    user: UserAuth = Depends(get_current_user),
+        user_id: int,
+        user: UserAuth = Depends(get_current_user),
 ) -> List[AudioResponse]:
+    """
+    Получает список аудиофайлов пользователя по его идентификатору.
+
+    Параметры:
+    - **user_id**: Идентификатор пользователя
+    - **user**: Авторизованный пользователь (из `Depends`)
+    **return** Список объектов AudioResponse
+    """
+
     user = await UserService.find_by_id(user_id)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")

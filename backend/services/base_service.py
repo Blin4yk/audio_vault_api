@@ -1,6 +1,4 @@
-from fastapi import HTTPException
 from sqlalchemy import insert, select, delete, update
-from sqlalchemy.exc import NoResultFound
 
 from backend.config import async_session_maker
 
@@ -51,8 +49,10 @@ class BaseService:
                 update(cls.model)
                 .where(cls.model.id == model_id)
                 .values(**update_data)
+                .returning(cls.model)
             )
             result = await session.execute(query)
-            update_model = await result.scalar_one_or_none()
-            await session.commit()
+            update_model = result.scalar_one_or_none()
+            if update_model:
+                await session.commit()
             return update_model

@@ -3,7 +3,8 @@ from requests_oauthlib import OAuth2Session
 
 from backend.config import yandex_config, AUTHORIZATION_BASE_URL, TOKEN_URL
 from backend.schemas.data_schemas import UserAuth
-from backend.services.auth_service import get_password_hash, authenticate_user, create_access_token
+from backend.services.auth_service import get_password_hash, authenticate_user, create_access_token, \
+    register_yandex_user
 from backend.services.user_service import UserService
 
 router = APIRouter(
@@ -40,7 +41,7 @@ async def logout_user(response: Response):
 
 
 @router.get("/authorize")
-def authorize():
+async def authorize():
     try:
         oauth = OAuth2Session(yandex_config.client_id, redirect_uri=yandex_config.redirect_uri)
         authorization_url, _ = oauth.authorization_url(AUTHORIZATION_BASE_URL)
@@ -48,8 +49,13 @@ def authorize():
     except Exception:
         raise HTTPException(status_code=500, detail="Ошибка получения ссылки")
 
+
 @router.post("/callback")
-def callback(response: Response, code: str = Query(..., description="Код подтверждения из Яндекса")):
+async def callback(
+    response: Response,
+    code: str = Query(..., description="Код подтверждения из Яндекса"),
+    password: str = Query(..., description="Пароль")
+):
     try:
         oauth = OAuth2Session(yandex_config.client_id, redirect_uri=yandex_config.redirect_uri)
         token = oauth.fetch_token(TOKEN_URL, client_secret=yandex_config.client_secret, code=code)
@@ -61,6 +67,8 @@ def callback(response: Response, code: str = Query(..., description="Код по
             value=access_token,
             httponly=True,
         )
+
+        await register_yandex_user(access_token, password)
 
         return {"access_token": access_token}
     except Exception:

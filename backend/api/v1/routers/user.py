@@ -38,7 +38,6 @@ async def update_user(
     """Изменение данных о пользователе"""
     update_dict = update_data.model_dump(exclude_unset=True)
 
-
     if not update_dict:
         raise HTTPException(400, detail="Нет данных для обновления")
 
